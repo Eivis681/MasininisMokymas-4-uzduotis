@@ -47,6 +47,7 @@ namespace MasininisMokymas
             int skipCounter = 0;
             for (int i = 0; i< human.Count;i++)
             {
+                //remove id needed
                 if (human[i].ugis==0)
                 {
                     skipCounter++;
@@ -68,6 +69,7 @@ namespace MasininisMokymas
             string sarasas = null;
             for(int i = 0; i< man.Count;i++)
             {
+                //remove if not needed 
                 if (man[i].ugis == 0)
                 {
                     man.RemoveAt(i);
@@ -98,11 +100,66 @@ namespace MasininisMokymas
 
         public void Korealiacijos(List<Human> human)
         {
+            List<double> jezusMana = new List<double>();
+            for (int i = 0; i< human.Count;i++)
+            {
+                if (human[i].ugis== 0)
+                {
+                    jezusMana.Add(human[i].svoris);
+                    jezusMana.Add(human[i].lytis);
+                    human.RemoveAt(i);
+                    i--;
+                }
+            }
+            double vidurkisUgis = 0;
+            double vidurkitLytis = 0;
+            double vidurkisSvoris = 0;
+            for (int i = 0; i < human.Count; i++)
+            {
+                vidurkisUgis = vidurkisUgis + human[i].ugis;
+                vidurkitLytis = vidurkitLytis + human[i].lytis;
+                vidurkisSvoris = vidurkisSvoris + human[i].svoris;
+            }
+            vidurkisUgis = vidurkisUgis / human.Count;
+            vidurkisSvoris = vidurkisSvoris / human.Count;
+            vidurkitLytis = vidurkitLytis / human.Count;
+            UpdateKorealiacijos("Ūgio vidurkis: " + vidurkisUgis);
+            UpdateKorealiacijos("Svorio vidurkis: " + vidurkisSvoris);
+            UpdateKorealiacijos("Lyties vidurkis: " + vidurkitLytis);
+            List<double> svoris = new List<double>();
+            List<double> ugis = new List<double>();
+            List<double> lytis = new List<double>();
+            for (int i = 0; i< human.Count;i++)
+            {
+                svoris.Add(human[i].svoris);
+                ugis.Add(human[i].ugis);
+                lytis.Add(human[i].lytis);
+            }
 
+            var avgUgis = ugis.Average();
+            var avgSvoris = svoris.Average();
+            var avgLytis = lytis.Average();
+
+            var sum1 = ugis.Zip(svoris, (x1, y1) => (x1 - avgUgis) * (y1 - avgSvoris)).Sum();
+            var sum2 = ugis.Zip(lytis, (x1, y1) => (x1 - avgUgis) * (y1 - avgLytis)).Sum();
+
+            var sumSqr1 = ugis.Sum(x => Math.Pow((x - avgUgis), 2.0));
+            var sumSqr2 = svoris.Sum(y => Math.Pow((y - avgSvoris), 2.0));
+            var sumSqr3 = lytis.Sum(y => Math.Pow((y - avgLytis), 2.0));
+
+            var resultUgisSvoris = sum1 / Math.Sqrt(sumSqr1 * sumSqr2);
+            var resultUgisLytis = sum2 / Math.Sqrt(sumSqr1 * sumSqr3);
+
+            UpdateKorealiacijos("Ugis svoris korealiacija: " + resultUgisSvoris);
+            UpdateKorealiacijos("Ugis lytis korealiacija: " + resultUgisLytis);
+
+            double skaicius = 1 / (resultUgisLytis+ resultUgisSvoris);
+            double finalResult = vidurkisUgis + skaicius * ((resultUgisSvoris*(jezusMana[0]- vidurkisSvoris)) + (resultUgisLytis*(jezusMana[1]-vidurkitLytis)));
+            UpdateKorealiacijos("Rezultatas " + finalResult);
         }
-        public void UpdateKorealiacijos(List<Human> human)
+        public void UpdateKorealiacijos(string data)
         {
-
+            listBoxKorealiacija.Items.Add(data);
         }
     }
 }
