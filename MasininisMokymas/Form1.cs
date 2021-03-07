@@ -33,6 +33,9 @@ namespace MasininisMokymas
 
         private void button1_Click(object sender, EventArgs e)
         {
+            listBoxKorealiacija.Items.Clear();
+            listBoxMediana.Items.Clear();
+            listBoxVidurkis.Items.Clear();
             int asd = 7 / 2;
             Database database = new Database();
             List<Human> human = database.GetData();
@@ -48,11 +51,11 @@ namespace MasininisMokymas
             for (int i = 0; i< human.Count;i++)
             {
                 //remove id needed
-                if (human[i].ugis==0)
-                {
-                    skipCounter++;
-                    continue;
-                }
+                //if (human[i].ugis==0)
+                //{
+                //    skipCounter++;
+                //    continue;
+                //}
                 vidurkis = vidurkis + human[i].ugis;
             }
             vidurkis = vidurkis / (human.Count- skipCounter);
@@ -70,12 +73,12 @@ namespace MasininisMokymas
             for(int i = 0; i< man.Count;i++)
             {
                 //remove if not needed 
-                if (man[i].ugis == 0)
-                {
-                    man.RemoveAt(i);
-                    i--;
-                    continue;
-                }
+                //if (man[i].ugis == 0)
+                //{
+                //    man.RemoveAt(i);
+                //    i--;
+                //    continue;
+                //}
                 sarasas = sarasas + " " + man[i].ugis;
             }
             UpdateMedianos("Surušiuotas sąrašas:" + sarasas);
@@ -83,9 +86,9 @@ namespace MasininisMokymas
             {
                 //lyginis
                 double vidurkis = 0;
-                int a = man.Count;
-                int b = man.Count + 1;
-                vidurkis = (man[a].ugis + man[b].ugis) /2;
+                int a = man.Count/2 -1;
+                //int b = (man.Count + 1)/2;
+                vidurkis = (man[a].ugis + man[a+1].ugis) /2;
                 UpdateMedianos("Mediana: " + vidurkis.ToString());
             }
             else
